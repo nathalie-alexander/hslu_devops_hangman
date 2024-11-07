@@ -1,65 +1,68 @@
-import random
-
 class Hangman:
-    def __init__(self, word_list):
-        self.word_list = word_list
+    HANGMAN_PICS = ['''
+  +---+
+      |
+      |
+      |
+      |
+      |
+=========''', '''
+  +---+
+  |   |
+      |
+      |
+      |
+      |
+=========''', '''
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+=========''', '''
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+=========''', '''
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+=========''', '''
+  +---+
+  |   |
+  O   |
+ /|\  |
+      |
+      |
+=========''', '''
+  +---+
+  |   |
+  O   |
+ /|\  |
+ /    |
+      |
+=========''', '''
+  +---+
+  |   |
+  O   |
+ /|\  |
+ / \  |
+      |
+=========''']
+
+    def __init__(self):
         self.word_to_guess = input("Enter a word for others to guess: ").strip().upper()
         self.guessed_letters = set()
         self.wrong_guesses = 0
-        self.max_attempts = 8
+        self.max_attempts = len(self.HANGMAN_PICS) - 1
         self.correct_guesses = set()
-
-    
-    HANGMANPICS = ['''
-    +---+
-    |   |
-        |
-        |
-        |
-        |
-    =========''', '''
-    +---+
-    |   |
-    O   |
-        |
-        |
-        |
-    =========''', '''
-    +---+
-    |   |
-    O   |
-    |   |
-        |
-        |
-    =========''', '''
-    +---+
-    |   |
-    O   |
-    /|   |
-        |
-        |
-    =========''', '''
-    +---+
-    |   |
-    O   |
-    /|\  |
-        |
-        |
-    =========''', '''
-    +---+
-    |   |
-    O   |
-    /|\  |
-    /    |
-        |
-    =========''', '''
-    +---+
-    |   |
-    O   |
-    /|\  |
-    / \  |
-        |
-    =========''']
 
     def display_word(self):
         display = [letter if letter in self.correct_guesses else '_' for letter in self.word_to_guess]
@@ -92,6 +95,7 @@ class Hangman:
         print("Try to guess the word, one letter at a time.")
 
         while self.game_status() == "ongoing":
+            self.display_hangman()
             print("\n" + self.display_word())
             print(f"Guessed letters: {', '.join(sorted(self.guessed_letters))}")
             print(f"Remaining attempts: {self.max_attempts - self.wrong_guesses}")
@@ -102,14 +106,13 @@ class Hangman:
             else:
                 print("Please enter a single letter.")
 
+        self.display_hangman()
+
         if self.game_status() == "won":
             print(f"\nCongratulations! You've won! The word was '{self.word_to_guess}'.")
         else:
             print(f"\nGame over! You've run out of attempts. The word was '{self.word_to_guess}'.")
 
-# Word list for the game
-words = ["python", "hangman", "programming", "development", "console"]
-
 # Start the game
-game = Hangman(words)
+game = Hangman()
 game.play()
