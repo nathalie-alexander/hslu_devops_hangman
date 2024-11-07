@@ -60,6 +60,10 @@ class Hangman:
 =========''']
 
     def __init__(self):
+        self.reset_game()
+
+    def reset_game(self):
+        # Reset game state
         self.word_to_guess = input("Enter a word for others to guess: ").strip().upper()
         self.clear_screen()
         self.guessed_letters = set()
@@ -99,68 +103,82 @@ class Hangman:
         elif all(letter in self.correct_guesses for letter in self.word_to_guess):
             return "won"
         return "ongoing"
+    
+    def play_again(self):
+        # Ask the user if they want to play again
+        while True:
+            choice = input("Would you like to play again? (y/n): ").strip().lower()
+            if choice in ('y', 'n'):
+                return choice == 'y'
+            print("Invalid input. Please enter 'y' or 'n'.")
 
     def play(self):
-        print("Welcome to Hangman!")
-        print("Try to guess the word, one letter at a time.")
+        while True:
+            print("Welcome to Hangman!")
+            print("Try to guess the word, one letter at a time.")
 
-        while self.game_status() == "ongoing":
+            while self.game_status() == "ongoing":
+                self.display_hangman()
+                print("\n" + self.display_word())
+                print(f"Guessed letters: {', '.join(sorted(self.guessed_letters))}")
+                print(f"Remaining attempts: {self.max_attempts - self.wrong_guesses}")
+                guess = input("Guess a letter: ").strip()
+
+                if len(guess) == 1 and guess.isalpha():
+                    self.guess_letter(guess)
+                else:
+                    print("Please enter a single letter.")
+
             self.display_hangman()
-            print("\n" + self.display_word())
-            print(f"Guessed letters: {', '.join(sorted(self.guessed_letters))}")
-            print(f"Remaining attempts: {self.max_attempts - self.wrong_guesses}")
-            guess = input("Guess a letter: ").strip()
 
-            if len(guess) == 1 and guess.isalpha():
-                self.guess_letter(guess)
-            else:
-                print("Please enter a single letter.")
-
-        self.display_hangman()
-
-        if self.game_status() == "won":
-            print("""
-                                   .''.       
-       .''.      .        *''*    :_\/_:     . 
-      :_\/_:   _\(/_  .:.*_\/_*   : /\ :  .'.:.'.
-  .''.: /\ :   ./)\   ':'* /\ * :  '..'.  -=:o:=-
- :_\/_:'.:::.    ' *''*    * '.\'/.' _\(/_'.':'.'
- : /\ : :::::     *_\/_*     -= o =-  /)\    '  *
-  '..'  ':::'     * /\ *     .'/.\'.   '
-      *            *..*         :
-       *
+            if self.game_status() == "won":
+                print("""
+                                    .''.       
+        .''.      .        *''*    :_\/_:     . 
+        :_\/_:   _\(/_  .:.*_\/_*   : /\ :  .'.:.'.
+    .''.: /\ :   ./)\   ':'* /\ * :  '..'.  -=:o:=-
+    :_\/_:'.:::.    ' *''*    * '.\'/.' _\(/_'.':'.'
+    : /\ : :::::     *_\/_*     -= o =-  /)\    '  *
+    '..'  ':::'     * /\ *     .'/.\'.   '
+        *            *..*         :
         *
-                  """)
-            print(f"\nCongratulations! You've won! The word was '{self.word_to_guess}'.")
-        else:
-            print("""
-┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼
-███▀▀▀██┼███▀▀▀███┼███▀█▄█▀███┼██▀▀▀
-██┼┼┼┼██┼██┼┼┼┼┼██┼██┼┼┼█┼┼┼██┼██┼┼┼
-██┼┼┼▄▄▄┼██▄▄▄▄▄██┼██┼┼┼▀┼┼┼██┼██▀▀▀
-██┼┼┼┼██┼██┼┼┼┼┼██┼██┼┼┼┼┼┼┼██┼██┼┼┼
-███▄▄▄██┼██┼┼┼┼┼██┼██┼┼┼┼┼┼┼██┼██▄▄▄
-┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼
-███▀▀▀███┼▀███┼┼██▀┼██▀▀▀┼██▀▀▀▀██▄┼
-██┼┼┼┼┼██┼┼┼██┼┼██┼┼██┼┼┼┼██┼┼┼┼┼██┼
-██┼┼┼┼┼██┼┼┼██┼┼██┼┼██▀▀▀┼██▄▄▄▄▄▀▀┼
-██┼┼┼┼┼██┼┼┼██┼┼█▀┼┼██┼┼┼┼██┼┼┼┼┼██┼
-███▄▄▄███┼┼┼─▀█▀┼┼─┼██▄▄▄┼██┼┼┼┼┼██▄
-┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼██┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼██┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼████▄┼┼┼▄▄▄▄▄▄▄┼┼┼▄████┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼┼▀▀█▄█████████▄█▀▀┼┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼┼┼┼█████████████┼┼┼┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼┼┼┼██▀▀▀███▀▀▀██┼┼┼┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼┼┼┼██┼┼┼███┼┼┼██┼┼┼┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼┼┼┼█████▀▄▀█████┼┼┼┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼┼┼┼┼███████████┼┼┼┼┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼▄▄▄██┼┼█▀█▀█┼┼██▄▄▄┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼▀▀██┼┼┼┼┼┼┼┼┼┼┼██▀▀┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼┼┼▀▀┼┼┼┼┼┼┼┼┼┼┼▀▀┼┼┼┼┼┼┼┼┼┼┼
-┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼
-                  """)
-            print(f"\nGame over! The word was '{self.word_to_guess}'.")
+            *
+                    """)
+                print(f"\nCongratulations! You've won! The word was '{self.word_to_guess}'.")
+            else:
+                print("""
+    ┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼
+    ███▀▀▀██┼███▀▀▀███┼███▀█▄█▀███┼██▀▀▀
+    ██┼┼┼┼██┼██┼┼┼┼┼██┼██┼┼┼█┼┼┼██┼██┼┼┼
+    ██┼┼┼▄▄▄┼██▄▄▄▄▄██┼██┼┼┼▀┼┼┼██┼██▀▀▀
+    ██┼┼┼┼██┼██┼┼┼┼┼██┼██┼┼┼┼┼┼┼██┼██┼┼┼
+    ███▄▄▄██┼██┼┼┼┼┼██┼██┼┼┼┼┼┼┼██┼██▄▄▄
+    ┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼
+    ███▀▀▀███┼▀███┼┼██▀┼██▀▀▀┼██▀▀▀▀██▄┼
+    ██┼┼┼┼┼██┼┼┼██┼┼██┼┼██┼┼┼┼██┼┼┼┼┼██┼
+    ██┼┼┼┼┼██┼┼┼██┼┼██┼┼██▀▀▀┼██▄▄▄▄▄▀▀┼
+    ██┼┼┼┼┼██┼┼┼██┼┼█▀┼┼██┼┼┼┼██┼┼┼┼┼██┼
+    ███▄▄▄███┼┼┼─▀█▀┼┼─┼██▄▄▄┼██┼┼┼┼┼██▄
+    ┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼██┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼██┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼████▄┼┼┼▄▄▄▄▄▄▄┼┼┼▄████┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼┼▀▀█▄█████████▄█▀▀┼┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼┼┼┼█████████████┼┼┼┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼┼┼┼██▀▀▀███▀▀▀██┼┼┼┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼┼┼┼██┼┼┼███┼┼┼██┼┼┼┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼┼┼┼█████▀▄▀█████┼┼┼┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼┼┼┼┼███████████┼┼┼┼┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼▄▄▄██┼┼█▀█▀█┼┼██▄▄▄┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼▀▀██┼┼┼┼┼┼┼┼┼┼┼██▀▀┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼┼┼▀▀┼┼┼┼┼┼┼┼┼┼┼▀▀┼┼┼┼┼┼┼┼┼┼┼
+    ┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼
+                    """)
+                print(f"\nGame over! The word was '{self.word_to_guess}'.")
+
+            if not self.play_again():
+                print("Thanks for playing Hangman! Goodbye!")
+                break
+            self.reset_game()
 
 # Start the game
 game = Hangman()
