@@ -6,8 +6,8 @@ class Player:
         self.name = name
         self.score = 0
 
-    def add_point(self):
-        self.score += 1
+    def add_point(self,points):
+        self.score += points
 
 
 class Hangman:
@@ -171,7 +171,7 @@ class Hangman:
             self.display_hangman()
 
             if self.game_status() == "won":
-                self.current_player().add_point()
+                self.current_player().add_point(self.max_attempts - self.wrong_guesses)
                 print("""
                                     .''.       
         .''.      .        *''*    :_\/_:     . 
